@@ -1,0 +1,21 @@
+{
+  "manifest_version": 3,
+  "name": "DigiTracker Auditor",
+  "version": "1.0",
+  "description": "Automated identity auditing and credential mapping.",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "<all_urls>"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ]
+}

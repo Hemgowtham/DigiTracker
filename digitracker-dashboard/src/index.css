@@ -1,0 +1,24 @@
+/* --- Monochrome Variables --- */
+:root {
+  --bg-main: #ffffff;
+  --card-bg: #fafafa;
+  --text-main: #000000;
+  --text-muted: #666666;
+  --accent-black: #000000;
+  --border-color: #e5e5e5;
+  --border-hover: #000000;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh;
+}
