@@ -47,7 +47,7 @@ export default function AdminDashboard() {
     hasPrompted.current = true;
 
     const devPasscode = window.prompt("Enter System Admin Passcode:");
-    if (devPasscode !== "admin123") {
+    if (devPasscode !== "123") {
       alert("Unauthorized access.");
       navigate('/login');
       return;

@@ -4,6 +4,10 @@ const mongoose = require('mongoose');
 const cors = require('cors'); // 1. Import CORS
 const Registration = require('./models/Registration');
 
+
+const User = require('./models/User'); 
+const bcrypt = require('bcrypt');
+
 const authRoutes = require('./routes/auth');
 const app = express();
 const PORT = 3000;
@@ -21,6 +25,8 @@ mongoose.connect(mongoURI)
     .then(() => console.log('🟢 Successfully connected to MongoDB!'))
     .catch((err) => console.log('🔴 Database connection failed:', err));
 
+
+// Temporary OTP Store (In production, this goes into MongoDB)
 
 app.get('/', (req, res) => {
     res.send('DigiTracker Backend is successfully running!');
@@ -117,6 +123,9 @@ app.delete('/api/user/footprints/:email', async (req, res) => {
         res.status(500).json({ error: "Internal Server Error" });
     }
 });
+
+
+
 
 app.listen(PORT, () => {
     console.log(`Server is running on http://localhost:${PORT}`);

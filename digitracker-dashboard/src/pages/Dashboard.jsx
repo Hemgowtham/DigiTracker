@@ -81,27 +81,37 @@ export default function Dashboard() {
     });
   };
 
-  const processedFootprints = footprints
-    .filter(site => {
-      const lowerCaseQuery = searchQuery.toLowerCase();
-      return site.domain.toLowerCase().includes(lowerCaseQuery) || site.email.toLowerCase().includes(lowerCaseQuery);
-    })
-    .sort((a, b) => {
-      const dateA = new Date(a.timestamp);
-      const dateB = new Date(b.timestamp);
-      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
-    });
-
   const isDomainRisky = (domain) => {
     const cleanDomain = domain.toLowerCase().replace("www.", "");
-    
-    // Instead of looking for an exact match, this checks if the captured 
-    // domain contains ANY of the risky domains in your list.
     return knownRiskyDomains.some(riskyDomain => {
       const cleanRisky = riskyDomain.toLowerCase().replace("www.", "");
       return cleanDomain.includes(cleanRisky);
     });
   };
+
+  const processedFootprints = footprints
+    .filter(site => {
+      const lowerCaseQuery = searchQuery.toLowerCase();
+      return (
+        site.domain.toLowerCase().includes(lowerCaseQuery) ||
+        site.email.toLowerCase().includes(lowerCaseQuery)
+      );
+    })
+    .sort((a, b) => {
+      // Step A: Check the risk status of both websites
+      const aIsRisky = isDomainRisky(a.domain);
+      const bIsRisky = isDomainRisky(b.domain);
+
+      // Step B: Pin risky sites to the top
+      if (aIsRisky && !bIsRisky) return -1; // Put A first
+      if (!aIsRisky && bIsRisky) return 1;  // Put B first
+
+      // Step C: If they are the same risk level, sort by date
+      const dateA = new Date(a.timestamp);
+      const dateB = new Date(b.timestamp);
+      return sortOrder === "newest" ? dateB - dateA : dateA - dateB;
+    });
+  
 
   return (
     <div className="app-wrapper">
@@ -272,8 +282,8 @@ export default function Dashboard() {
           but the PDF engine captures it flawlessly.)
           ========================================================================= */}
       <div style={{ position: 'absolute', top: '-10000px', left: '-10000px' }}>
-        <div id="pdf-report-template" style={{ width: '800px', padding: '40px', backgroundColor: '#ffffff', color: '#000000', fontFamily: 'sans-serif' }}>
-          
+      <div id="pdf-report-template" style={{ width: '7.5in', boxSizing: 'border-box', padding: '40px', backgroundColor: '#ffffff', color: '#000000', fontFamily: 'sans-serif' }}>
+
           {/* PDF Header */}
           <div style={{ borderBottom: '2px solid #000', paddingBottom: '20px', marginBottom: '30px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end' }}>
             <div>

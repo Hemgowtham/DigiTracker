@@ -4,7 +4,7 @@
   "version": "1.0",
   "description": "Automated identity auditing and credential mapping.",
   "permissions": [
-    "storage"
+    "storage","activeTab"
   ],
   "host_permissions": [
     "<all_urls>"

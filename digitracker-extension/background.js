@@ -1,23 +1,25 @@
-// Listen for messages coming from our content.js script
+// background.js
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    
-    if (request.type === "NEW_REGISTRATION") {
-        console.log("Background Worker woke up and received data:", request.data);
+    if (request.action === "analyzePrivacy") {
+        console.log("Background: Received text, sending to Python AI...");
 
-        // Immediately tell Chrome we got the message so it doesn't throw an error!
-        sendResponse({ status: "received", message: "Data securely caught by worker." });
-
-        // Now, quietly send the data to your Node.js backend in the background
-        fetch('http://localhost:3000/api/track', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(request.data)
+        fetch("http://localhost:8000/api/analyze", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                domain: request.domain,
+                policy_text: request.policy_text
+            })
         })
         .then(response => response.json())
-        .then(data => console.log("✅ Successfully beamed to backend!", data))
-        .catch(error => console.error("❌ Failed to contact backend:", error));
-    }
+        .then(data => {
+            sendResponse({ success: true, data: data }); 
+        })
+        .catch(error => {
+            console.error("Background fetch error:", error);
+            sendResponse({ success: false, error: error.message });
+        });
 
-    // Return true to indicate we wish to send a response asynchronously (best practice)
-    return true; 
+        return true; 
+    }
 });
